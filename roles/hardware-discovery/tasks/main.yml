@@ -3,7 +3,7 @@
   ansible.builtin.debug:
     msg:
       - "Surface hardware discovery"
-      - "Hostname: {{ ansible_hostname }}"
+      - "Hostname: {{ ansible_facts['hostname'] }}"
       - "Model: {{ surface_model | default('Unknown') }}"
 
 # - name: Gather Ansible facts
