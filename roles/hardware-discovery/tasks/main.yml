@@ -6,8 +6,8 @@
       - "Hostname: {{ ansible_facts['hostname'] }}"
       - "Model: {{ surface_model | default('Unknown') }}"
 
-# - name: Gather Ansible facts
-#   ansible.builtin.setup:
+- name: Gather Ansible facts
+  ansible.builtin.setup:
 
 # - name: Install hardware discovery utilities
 #   ansible.builtin.dnf:
