@@ -1,0 +1,33 @@
+---
+# Microsoft Surface configuration
+
+surface_enable_touch: true
+surface_enable_pen: true
+surface_enable_rotation: true
+surface_enable_power_management: true
+surface_enable_kde_configuration: true
+
+# Linux Surface repository behaviour.
+#
+# auto:
+#   Determine the Fedora version and select the appropriate
+#   Linux Surface repository.
+#
+# explicit:
+#   Use surface_fedora_repository_release below.
+#
+surface_repository_mode: auto
+
+surface_fedora_repository_release: ""
+
+# Install the Surface secure-boot package.
+surface_secureboot_enabled: true
+
+# Keep Fedora's normal kernel installed as a fallback.
+surface_keep_stock_kernel: true
+
+# Reboot automatically when a new Surface kernel has been installed.
+surface_reboot_after_kernel_install: true
+
+# Hardware discovery
+surface_hardware_discovery_enabled: true

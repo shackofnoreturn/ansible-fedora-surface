@@ -1,0 +1,72 @@
+---
+- name: Display target host
+  ansible.builtin.debug:
+    msg:
+      - "Surface hardware discovery"
+      - "Hostname: {{ ansible_hostname }}"
+      - "Model: {{ surface_model | default('Unknown') }}"
+
+# - name: Gather Ansible facts
+#   ansible.builtin.setup:
+
+# - name: Install hardware discovery utilities
+#   ansible.builtin.dnf:
+#     name:
+#       - pciutils
+#       - usbutils
+#       - util-linux
+#       - dmidecode
+#       - fwupd
+#       - libinput
+#       - kernel-tools
+#     state: present
+
+# - name: Check optional command availability
+#   ansible.builtin.command:
+#     cmd: "bash -c 'command -v {{ item }}'"
+#   loop:
+#     - wpctl
+#     - kscreen-doctor
+#   register: hardware_discovery_optional_commands
+#   changed_when: false
+#   failed_when: false
+
+# - name: Build available command list
+#   ansible.builtin.set_fact:
+#     hardware_discovery_available_commands: >-
+#       {{
+#         hardware_discovery_optional_commands.results
+#         | selectattr('rc', 'equalto', 0)
+#         | map(attribute='item')
+#         | list
+#       }}
+
+# - name: Run hardware discovery commands
+#   ansible.builtin.command:
+#     cmd: "{{ item.command }}"
+#   loop: "{{ hardware_discovery_commands }}"
+#   register: hardware_discovery_results
+#   changed_when: false
+#   failed_when: false
+
+# - name: Create hardware report directory
+#   ansible.builtin.file:
+#     path: "{{ hardware_discovery_report_directory }}"
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: "0755"
+
+# - name: Generate hardware discovery report
+#   ansible.builtin.template:
+#     src: hardware-report.txt.j2
+#     dest: "{{ hardware_discovery_report_directory }}/{{ hardware_discovery_report_file }}"
+#     owner: root
+#     group: root
+#     mode: "0644"
+
+# - name: Display hardware discovery summary
+#   ansible.builtin.debug:
+#     msg:
+#       - "Hardware discovery completed."
+#       - "Report: {{ hardware_discovery_report_directory }}/{{ hardware_discovery_report_file }}"

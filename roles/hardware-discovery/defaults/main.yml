@@ -1,0 +1,73 @@
+---
+hardware_discovery_report_directory: "/var/log/ansible-surface"
+hardware_discovery_report_file: "hardware-report.txt"
+
+hardware_discovery_commands:
+  - name: "uname"
+    command: "uname -a"
+
+  - name: "os-release"
+    command: "cat /etc/os-release"
+
+  - name: "cpu"
+    command: "lscpu"
+
+  - name: "pci"
+    command: "lspci -nnk"
+
+  - name: "usb"
+    command: "lsusb"
+
+  - name: "input-devices"
+    command: "cat /proc/bus/input/devices"
+
+  - name: "iio-devices"
+    command: "ls -la /sys/bus/iio/devices/"
+
+  - name: "block-devices"
+    command: "lsblk -e7 -o NAME,MODEL,SIZE,TYPE,FSTYPE,MOUNTPOINTS"
+
+  - name: "network"
+    command: "ip -br address"
+
+  - name: "network-drivers"
+    command: "lspci -nnk"
+
+  - name: "bluetooth"
+    command: "rfkill list"
+
+  - name: "battery"
+    command: "ls -la /sys/class/power_supply/"
+
+  - name: "firmware"
+    command: "fwupdmgr get-devices"
+
+  - name: "dmi"
+    command: "dmidecode -t system"
+
+  - name: "kernel-modules"
+    command: "lsmod"
+
+  - name: "udev-surface"
+    command: "udevadm info --export-db | grep -i surface"
+
+  - name: "surface-sysfs"
+    command: "find /sys -maxdepth 5 -iname '*surface*' 2>/dev/null"
+
+  - name: "video-devices"
+    command: "ls -la /dev/video*"
+
+  - name: "audio"
+    command: "wpctl status"
+
+  - name: "session"
+    command: "loginctl"
+
+  - name: "display"
+    command: "kscreen-doctor -o"
+
+  - name: "libinput"
+    command: "libinput list-devices"
+
+  - name: "kernel-command-line"
+    command: "cat /proc/cmdline"

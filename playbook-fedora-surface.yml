@@ -1,0 +1,8 @@
+---
+- name: Configure Fedora Microsoft Surface
+  hosts: surface
+  become: true
+
+  roles:
+    - role: hardware-discovery
+      when: surface_hardware_discovery_enabled | bool
