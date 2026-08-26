@@ -3,46 +3,46 @@ Microsoft Surface Hardware Discovery
 ======================================================================
 
 Generated:
-  {{ ansible_date_time.iso8601 }}
+  {{ ansible_facts['date_time']['iso8601'] }}
 
 Hostname:
-  {{ ansible_hostname }}
+  {{ ansible_facts['hostname'] }}
 
 Model:
   {{ surface_model | default('Unknown') }}
 
 Ansible Distribution:
-  {{ ansible_distribution }} {{ ansible_distribution_version }}
+  {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
 
 Kernel:
-  {{ ansible_kernel }}
+  {{ ansible_facts['kernel'] }}
 
 Architecture:
-  {{ ansible_architecture }}
+  {{ ansible_facts['architecture'] }}
 
 ======================================================================
 ANSIBLE FACTS
 ======================================================================
 
 CPU:
-  {{ ansible_processor | join(', ') }}
+  {{ ansible_facts['processor'] | join(', ') }}
 
 CPU cores:
-  {{ ansible_processor_vcpus }}
+  {{ ansible_facts['processor_vcpus'] }}
 
 Memory:
-  {{ ansible_memtotal_mb }} MB
+  {{ ansible_facts['memtotal_mb'] }} MB
 
 BIOS:
-  {{ ansible_bios_vendor }}
-  {{ ansible_bios_version }}
-  {{ ansible_bios_date }}
+  {{ ansible_facts['bios_vendor'] }}
+  {{ ansible_facts['bios_version'] }}
+  {{ ansible_facts['bios_date'] }}
 
 Machine:
-  {{ ansible_machine }}
+  {{ ansible_facts['machine'] }}
 
 Virtualization:
-  {{ ansible_virtualization_type }}
+  {{ ansible_facts['virtualization_type'] }}
 
 ======================================================================
 COMMAND OUTPUT
