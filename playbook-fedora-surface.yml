@@ -8,3 +8,5 @@
       when: surface_hardware_discovery_enabled | bool
 
     - role: surface-repository
+
+    - role: surface-kernel

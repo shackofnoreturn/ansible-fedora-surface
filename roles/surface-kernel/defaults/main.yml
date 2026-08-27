@@ -1,0 +1,19 @@
+---
+# Linux Surface kernel configuration
+
+surface_kernel_package: "kernel-surface"
+
+# Keep Fedora's stock kernel installed as a fallback.
+surface_keep_stock_kernel: true
+
+# Automatically reboot when a new Surface kernel has been installed.
+surface_reboot_after_kernel_install: true
+
+# String expected in the running kernel release.
+surface_kernel_identifier: "surface"
+
+# Number of seconds to wait for the machine to come back after reboot.
+surface_kernel_reboot_timeout: 600
+
+# Seconds between connection attempts after reboot.
+surface_kernel_reboot_delay: 10

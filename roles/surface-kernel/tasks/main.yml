@@ -1,0 +1,111 @@
+---
+- name: Gather kernel facts
+  ansible.builtin.setup:
+    gather_subset:
+      - kernel
+
+- name: Display currently running kernel
+  ansible.builtin.debug:
+    msg:
+      - "Current kernel: {{ ansible_facts['kernel'] }}"
+      - "Kernel release: {{ ansible_facts['kernel_release'] }}"
+      - "Architecture: {{ ansible_facts['architecture'] }}"
+
+- name: Check installed Surface kernels
+  ansible.builtin.shell:
+    cmd: "rpm -qa | grep '^kernel-surface' || true"
+  register: surface_kernel_installed
+  changed_when: false
+
+- name: Display installed Surface kernels
+  ansible.builtin.debug:
+    msg: "{{ surface_kernel_installed.stdout_lines }}"
+
+- name: Install Linux Surface kernel
+  ansible.builtin.dnf:
+    name: "{{ surface_kernel_package }}"
+    state: present
+  register: surface_kernel_install
+
+- name: Display kernel installation result
+  ansible.builtin.debug:
+    msg:
+      - "Surface kernel package: {{ surface_kernel_package }}"
+      - "Package changed: {{ surface_kernel_install.changed }}"
+
+- name: Check installed kernel packages
+  ansible.builtin.shell:
+    cmd: "rpm -q kernel kernel-core kernel-modules kernel-surface 2>/dev/null || true"
+  register: surface_kernel_packages
+  changed_when: false
+
+- name: Display installed kernel packages
+  ansible.builtin.debug:
+    msg: "{{ surface_kernel_packages.stdout_lines }}"
+
+- name: Check running kernel
+  ansible.builtin.command:
+    cmd: uname -r
+  register: surface_running_kernel
+  changed_when: false
+
+- name: Determine whether Surface kernel is running
+  ansible.builtin.set_fact:
+    surface_kernel_is_running: >-
+      {{
+        surface_kernel_identifier in surface_running_kernel.stdout
+      }}
+
+- name: Display Surface kernel status
+  ansible.builtin.debug:
+    msg:
+      - "Running kernel: {{ surface_running_kernel.stdout }}"
+      - "Surface kernel running: {{ surface_kernel_is_running }}"
+
+- name: Determine whether reboot is required
+  ansible.builtin.set_fact:
+    surface_kernel_reboot_required: >-
+      {{
+        surface_kernel_install.changed
+        and not surface_kernel_is_running
+      }}
+
+- name: Display reboot requirement
+  ansible.builtin.debug:
+    msg:
+      - "Surface kernel installed: {{ surface_kernel_install.changed }}"
+      - "Surface kernel currently running: {{ surface_kernel_is_running }}"
+      - "Reboot required: {{ surface_kernel_reboot_required }}"
+
+- name: Reboot into Surface kernel
+  ansible.builtin.reboot:
+    reboot_timeout: "{{ surface_kernel_reboot_timeout }}"
+    pre_reboot_delay: 5
+    post_reboot_delay: "{{ surface_kernel_reboot_delay }}"
+    test_command: "uname -r"
+  when:
+    - surface_reboot_after_kernel_install | bool
+    - surface_kernel_reboot_required | bool
+
+- name: Check running kernel after reboot
+  ansible.builtin.command:
+    cmd: uname -r
+  register: surface_running_kernel_after_reboot
+  changed_when: false
+
+- name: Display running kernel after installation
+  ansible.builtin.debug:
+    msg:
+      - "Running kernel: {{ surface_running_kernel_after_reboot.stdout }}"
+      - "Expected identifier: {{ surface_kernel_identifier }}"
+
+- name: Verify Surface kernel is running
+  ansible.builtin.assert:
+    that:
+      - surface_kernel_identifier in surface_running_kernel_after_reboot.stdout
+    fail_msg: >-
+      The Linux Surface kernel is installed but is not currently running.
+      Running kernel: {{ surface_running_kernel_after_reboot.stdout }}
+    success_msg: >-
+      Linux Surface kernel is active:
+      {{ surface_running_kernel_after_reboot.stdout }}
