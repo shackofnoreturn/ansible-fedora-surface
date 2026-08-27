@@ -7,7 +7,7 @@ surface_kernel_package: "kernel-surface"
 surface_keep_stock_kernel: true
 
 # Automatically reboot when a new Surface kernel has been installed.
-surface_reboot_after_kernel_install: true
+surface_reboot_after_kernel_install: false
 
 # String expected in the running kernel release.
 surface_kernel_identifier: "surface"
