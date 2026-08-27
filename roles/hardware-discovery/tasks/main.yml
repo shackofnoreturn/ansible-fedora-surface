@@ -64,12 +64,3 @@
     owner: root
     group: root
     mode: "0644"
-
-- name: Read hardware report
-  ansible.builtin.slurp:
-    src: "{{ hardware_discovery_report_directory }}/{{ hardware_discovery_report_file }}"
-  register: hardware_discovery_report
-
-- name: Display hardware report in Semaphore
-  ansible.builtin.debug:
-    msg: "{{ hardware_discovery_report.content | b64decode }}"
