@@ -1,0 +1,18 @@
+---
+# Linux Surface repository configuration
+
+surface_repository_url: "https://pkg.surfacelinux.com/fedora/linux-surface.repo"
+
+# Fedora release used by the Linux Surface repository.
+#
+# auto:
+#   Automatically determine the appropriate repository release.
+#
+# explicit:
+#   Use surface_fedora_repository_release.
+#
+surface_repository_mode: "auto"
+
+surface_fedora_repository_release: ""
+
+surface_repository_file: "/etc/yum.repos.d/linux-surface.repo"
