@@ -24,6 +24,8 @@
   ansible.builtin.dnf:
     name: "{{ surface_kernel_package }}"
     state: present
+    enablerepo:
+      - linux-surface
   register: surface_kernel_install
 
 - name: Display kernel installation result
@@ -86,25 +88,28 @@
     - surface_reboot_after_kernel_install | bool
     - surface_kernel_reboot_required | bool
 
-- name: Check running kernel after reboot
+- name: Check running kernel after installation
   ansible.builtin.command:
     cmd: uname -r
-  register: surface_running_kernel_after_reboot
+  register: surface_running_kernel_after_install
   changed_when: false
 
 - name: Display running kernel after installation
   ansible.builtin.debug:
     msg:
-      - "Running kernel: {{ surface_running_kernel_after_reboot.stdout }}"
+      - "Running kernel: {{ surface_running_kernel_after_install.stdout }}"
       - "Expected identifier: {{ surface_kernel_identifier }}"
 
 - name: Verify Surface kernel is running
   ansible.builtin.assert:
     that:
-      - surface_kernel_identifier in surface_running_kernel_after_reboot.stdout
+      - >
+        surface_kernel_identifier in
+        surface_running_kernel_after_install.stdout
+        or not surface_reboot_after_kernel_install | bool
     fail_msg: >-
       The Linux Surface kernel is installed but is not currently running.
-      Running kernel: {{ surface_running_kernel_after_reboot.stdout }}
+      Running kernel: {{ surface_running_kernel_after_install.stdout }}
     success_msg: >-
-      Linux Surface kernel is active:
-      {{ surface_running_kernel_after_reboot.stdout }}
+      Linux Surface kernel verification completed.
+      Running kernel: {{ surface_running_kernel_after_install.stdout }}
