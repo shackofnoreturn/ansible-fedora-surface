@@ -1,18 +1,13 @@
 ---
-# Linux Surface repository configuration
-
-surface_repository_url: "https://pkg.surfacelinux.com/fedora/linux-surface.repo"
-
-# Fedora release used by the Linux Surface repository.
-#
-# auto:
-#   Automatically determine the appropriate repository release.
-#
-# explicit:
-#   Use surface_fedora_repository_release.
-#
-surface_repository_mode: "auto"
-
-surface_fedora_repository_release: ""
+surface_repository_base_url: "https://pkg.surfacelinux.com/fedora"
 
 surface_repository_file: "/etc/yum.repos.d/linux-surface.repo"
+
+# Leave empty to use the Fedora mapping below.
+surface_repository_release: ""
+
+# Linux Surface currently has no Fedora 44 repository.
+# Fedora 44 therefore uses the Fedora 43 repository.
+surface_repository_fedora_mapping:
+  "43": "43"
+  "44": "43"

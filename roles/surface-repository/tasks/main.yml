@@ -2,20 +2,50 @@
 - name: Gather Fedora facts
   ansible.builtin.setup:
 
-- name: Display Fedora version
+- name: Determine Linux Surface repository release
+  ansible.builtin.set_fact:
+    surface_repository_selected_release: >-
+      {{
+        surface_repository_release
+        if surface_repository_release | length > 0
+        else
+        surface_repository_fedora_mapping[
+          ansible_facts['distribution_major_version']
+        ]
+        | default('')
+      }}
+
+- name: Display Linux Surface repository selection
   ansible.builtin.debug:
     msg:
-      - "Distribution: {{ ansible_facts['distribution'] }}"
-      - "Distribution version: {{ ansible_facts['distribution_version'] }}"
-      - "Distribution major version: {{ ansible_facts['distribution_major_version'] }}"
+      - "Installed Fedora: {{ ansible_facts['distribution_major_version'] }}"
+      - "Linux Surface repository: Fedora {{ surface_repository_selected_release }}"
 
-- name: Download Linux Surface repository configuration
-  ansible.builtin.get_url:
-    url: "{{ surface_repository_url }}"
+- name: Fail when no Linux Surface repository is defined
+  ansible.builtin.assert:
+    that:
+      - surface_repository_selected_release | length > 0
+    fail_msg: >-
+      No Linux Surface repository mapping exists for Fedora
+      {{ ansible_facts['distribution_major_version'] }}.
+
+- name: Create Linux Surface repository configuration
+  ansible.builtin.copy:
     dest: "{{ surface_repository_file }}"
     owner: root
     group: root
     mode: "0644"
+    content: |
+      [linux-surface]
+      name=Linux Surface - Fedora {{ surface_repository_selected_release }}
+      baseurl={{ surface_repository_base_url }}/f{{ surface_repository_selected_release }}/
+      enabled=1
+      gpgcheck=0
+      metadata_expire=6h
+
+- name: Refresh DNF metadata
+  ansible.builtin.dnf:
+    update_cache: true
 
 - name: Check Linux Surface repository
   ansible.builtin.command:
@@ -27,19 +57,28 @@
   ansible.builtin.debug:
     msg: "{{ surface_repository_repolist.stdout_lines }}"
 
-- name: Verify Linux Surface repository is available
+- name: Query Surface kernel
   ansible.builtin.command:
-    cmd: dnf repoquery --repoid=linux-surface --available kernel-surface
+    cmd: >-
+      dnf repoquery
+      --repoid=linux-surface
+      --available
+      --qf '%{name}-%{version}-%{release}.%{arch}'
+      kernel-surface
   register: surface_repository_kernel_query
   changed_when: false
   failed_when: false
 
 - name: Display Surface kernel availability
   ansible.builtin.debug:
-    msg: >-
-      {{
-        'kernel-surface is available from the Linux Surface repository.'
-        if surface_repository_kernel_query.rc == 0
-        else
-        'WARNING: kernel-surface is not currently available from the Linux Surface repository.'
-      }}
+    msg:
+      - "Repository: Fedora {{ surface_repository_selected_release }}"
+      - >-
+        {{
+          'kernel-surface is available from the Linux Surface repository.'
+          if surface_repository_kernel_query.rc == 0
+          else
+          'kernel-surface is NOT available from the Linux Surface repository.'
+        }}
+      - "Packages:"
+      - "{{ surface_repository_kernel_query.stdout_lines }}"
