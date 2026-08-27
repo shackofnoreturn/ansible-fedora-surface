@@ -8,7 +8,6 @@
   ansible.builtin.debug:
     msg:
       - "Current kernel: {{ ansible_facts['kernel'] }}"
-      - "Kernel release: {{ ansible_facts['kernel_release'] }}"
       - "Architecture: {{ ansible_facts['architecture'] }}"
 
 - name: Check installed Surface kernels
