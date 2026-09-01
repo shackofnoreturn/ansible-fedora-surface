@@ -16,7 +16,14 @@ surface_enable_kde_configuration: true
 # explicit:
 #   Use surface_fedora_repository_release below.
 #
-surface_repository_mode: auto
+
+# Linux Surface repository release.
+#
+# The Linux Surface repository currently does not provide
+# a Fedora 44 repository, so Fedora 44 uses the Fedora 43
+# repository until an F44 repository becomes available.
+#
+surface_repository_mode: "auto"
 
 surface_fedora_repository_release: ""
 
